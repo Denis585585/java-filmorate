@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -37,23 +38,13 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film newFilm) {
-        if (!films.containsKey(newFilm.getId())) {
-            throw new ValidationException("Фильм по такому id не найден");
-        }
+    public Film updateFilm(@Valid @RequestBody Film newFilm) {
+        @NonNull
         Film film = films.get(newFilm.getId());
-        if (newFilm.getName() != null && !newFilm.getName().isBlank()) {
-            film.setName(newFilm.getName());
-        }
-        if (newFilm.getDescription() != null && !newFilm.getDescription().isBlank()) {
-            film.setDescription(newFilm.getDescription());
-        }
-        if (newFilm.getReleaseDate() != null) {
-            film.setReleaseDate(newFilm.getReleaseDate());
-        }
-        if (newFilm.getDuration() >= 0) {
-            film.setDuration(newFilm.getDuration());
-        }
+        film.setName(newFilm.getName());
+        film.setDescription(newFilm.getDescription());
+        film.setReleaseDate(newFilm.getReleaseDate());
+        film.setDuration(newFilm.getDuration());
         log.info("Фильм обновлен: {}", film);
         films.put(film.getId(), film);
         return film;

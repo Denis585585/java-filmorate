@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
@@ -37,23 +37,12 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User newUser) {
-        if (!users.containsKey(newUser.getId())) {
-            throw new ValidationException("User with this id not found");
-        }
+        @NonNull
         User user = users.get(newUser.getId());
-        if (newUser.getEmail() != null && !newUser.getEmail().isBlank()
-                && newUser.getEmail().matches("^[\\w-.]+@[\\w-]+(\\.[\\w-]+)*\\.[a-z]{2,}$")) {
-            user.setEmail(newUser.getEmail());
-        }
-        if (newUser.getLogin() != null && !newUser.getLogin().isBlank()) {
-            user.setLogin(newUser.getLogin());
-        }
-        if (newUser.getName() != null && !newUser.getName().isBlank()) {
-            user.setName(newUser.getName());
-        }
-        if (newUser.getBirthday() != null) {
-            user.setBirthday(newUser.getBirthday());
-        }
+        user.setEmail(newUser.getEmail());
+        user.setLogin(newUser.getLogin());
+        user.setName(newUser.getName());
+        user.setBirthday(newUser.getBirthday());
         log.info("User updated: {}", user);
         users.put(newUser.getId(), user);
         return user;
