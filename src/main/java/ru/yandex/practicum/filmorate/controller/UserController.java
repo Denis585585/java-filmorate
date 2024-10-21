@@ -47,6 +47,4 @@ public class UserController {
         users.put(newUser.getId(), user);
         return user;
     }
-
-
 }
