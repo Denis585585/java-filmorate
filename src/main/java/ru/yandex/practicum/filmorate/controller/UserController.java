@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PutMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public User updateUser(@Valid @RequestBody User updatedUser) {
         log.info("User {} updated", updatedUser);
         return userService.updateUser(updatedUser);
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userService.addFriend(id, friendId);
     }
