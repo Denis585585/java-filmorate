@@ -1,51 +1,70 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @Slf4j
 @RequestMapping("/films")
+@RequiredArgsConstructor
 public class FilmController {
 
-    private int nextId = 1;
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final FilmService filmService;
 
-    //Получаем фильмы
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public Collection<Film> getFilms() {
-        return films.values();
+        return filmService.getFilms();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Film getFilmById(@PathVariable Long id) {
+        return filmService.geFilmById(id);
+    }
+
+    @GetMapping("/popular")
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") Long count) {
+        return filmService.getPopularFilms(count);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
+        filmService.deleteLike(id, userId);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Film addFilm(@Valid @RequestBody Film film) {
-        log.info("Добавлен фильм: {}", film);
-        film.setId(getNextId());
-        films.put(film.getId(), film);
-        return film;
-    }
-
-    private int getNextId() {
-        return nextId++;
+        log.info("Film {} was add", film);
+        return filmService.addFilm(film);
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film newFilm) {
-        @NonNull
-        Film film = films.get(newFilm.getId());
-        film.setName(newFilm.getName());
-        film.setDescription(newFilm.getDescription());
-        film.setReleaseDate(newFilm.getReleaseDate());
-        film.setDuration(newFilm.getDuration());
-        log.info("Фильм обновлен: {}", film);
-        films.put(film.getId(), film);
-        return film;
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Film updateFilm(@Valid @RequestBody Film updatedFilm) {
+        log.info("Film was {} was update", updatedFilm);
+        return filmService.updateFilm(updatedFilm);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletedFilm(@PathVariable Long id) {
+        filmService.deleteFilm(id);
     }
 }
