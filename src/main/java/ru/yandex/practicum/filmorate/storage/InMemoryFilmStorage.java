@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
@@ -14,7 +13,7 @@ import java.util.Map;
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private int nextId = 1;
+    private long nextId = 1;
     private final Map<Long, Film> films = new HashMap<>();
 
     @Override
@@ -27,15 +26,21 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film updatedFilm) {
-        @NonNull
-        Film film = films.get(updatedFilm.getId());
-        film.setName(updatedFilm.getName());
-        film.setDescription(updatedFilm.getDescription());
-        film.setReleaseDate(updatedFilm.getReleaseDate());
-        film.setDuration(updatedFilm.getDuration());
-        films.put(film.getId(), film);
-        log.info("Фильм обновлен: {}", film);
-        return film;
+        //проверяем необходимые условия
+        if (updatedFilm.getId() == null) {
+            throw new NotFoundException("Film's id not found");
+        }
+        if (!films.containsKey(updatedFilm.getId())) {
+            throw new NotFoundException("Film with this id not found");
+        } else {
+            Film oldFilm = films.get(updatedFilm.getId());
+            oldFilm.setName(updatedFilm.getName());
+            oldFilm.setDescription(updatedFilm.getDescription());
+            oldFilm.setReleaseDate(updatedFilm.getReleaseDate());
+            oldFilm.setDuration(updatedFilm.getDuration());
+            films.put(oldFilm.getId(), oldFilm);
+            return oldFilm;
+        }
     }
 
     @Override

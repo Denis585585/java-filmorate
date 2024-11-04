@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
@@ -13,7 +12,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
-    private int nextId = 1;
+    private long nextId = 1;
     private final Map<Long, User> users = new HashMap<>();
 
     @Override
@@ -35,15 +34,21 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User updatedUser) {
-        @NonNull
-        User user = users.get(updatedUser.getId());
-        user.setEmail(updatedUser.getEmail());
-        user.setLogin(updatedUser.getLogin());
-        user.setName(updatedUser.getName());
-        user.setBirthday(updatedUser.getBirthday());
-        log.info("User updated: {}", user);
-        users.put(updatedUser.getId(), user);
-        return user;
+        if (updatedUser.getId() == null) {
+            throw new NotFoundException("User's id not found");
+        }
+        if (!users.containsKey(updatedUser.getId())) {
+            throw new NotFoundException("User not found");
+        } else {
+            User oldUser = users.get(updatedUser.getId());
+            oldUser.setEmail(updatedUser.getEmail());
+            oldUser.setLogin(updatedUser.getLogin());
+            oldUser.setName(updatedUser.getName());
+            oldUser.setBirthday(updatedUser.getBirthday());
+            log.info("User updated: {}", oldUser);
+            users.put(updatedUser.getId(), oldUser);
+            return oldUser;
+        }
     }
 
     @Override
