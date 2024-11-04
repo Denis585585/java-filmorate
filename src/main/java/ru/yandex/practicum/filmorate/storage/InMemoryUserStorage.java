@@ -24,10 +24,10 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User createUser(@Valid @RequestBody User user) {
+    public User createUser(User user) {
         user.setId(getNextId());
-        log.info("Добавлен новый пользователь: {}", user);
         users.put(user.getId(), user);
+        log.info("Добавлен новый пользователь: {}", user);
         return user;
     }
 
@@ -36,15 +36,15 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User updateUser(@Valid @RequestBody User newUser) {
+    public User updateUser(User updatedUser) {
         @NonNull
-        User user = users.get(newUser.getId());
-        user.setEmail(newUser.getEmail());
-        user.setLogin(newUser.getLogin());
-        user.setName(newUser.getName());
-        user.setBirthday(newUser.getBirthday());
+        User user = users.get(updatedUser.getId());
+        user.setEmail(updatedUser.getEmail());
+        user.setLogin(updatedUser.getLogin());
+        user.setName(updatedUser.getName());
+        user.setBirthday(updatedUser.getBirthday());
         log.info("User updated: {}", user);
-        users.put(newUser.getId(), user);
+        users.put(updatedUser.getId(), user);
         return user;
     }
 

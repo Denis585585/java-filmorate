@@ -47,7 +47,8 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.OK)
-    public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+    public void addFriend(@PathVariable Long id,
+                          @PathVariable Long friendId) {
         userService.addFriend(id, friendId);
     }
 
@@ -57,7 +58,7 @@ public class UserController {
         return userService.getFriends(id);
     }
 
-    @GetMapping("/users/{id}/friends/common/{otherId}")
+    @GetMapping("/{id}/friends/common/{otherId}")
     @ResponseStatus(HttpStatus.OK)
     public Collection<User> getCommonFriends(@PathVariable Long id,
                                              @PathVariable("otherId") Long friendId) {

@@ -1,10 +1,8 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -20,23 +18,23 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
 
     @Override
-    public Film addFilm(@Valid @RequestBody Film film) {
-        log.info("Добавлен фильм: {}", film);
+    public Film addFilm(Film film) {
         film.setId(getNextId());
         films.put(film.getId(), film);
+        log.info("Добавлен фильм: {}", film);
         return film;
     }
 
     @Override
-    public Film updateFilm(@Valid @RequestBody Film newFilm) {
+    public Film updateFilm(Film updatedFilm) {
         @NonNull
-        Film film = films.get(newFilm.getId());
-        film.setName(newFilm.getName());
-        film.setDescription(newFilm.getDescription());
-        film.setReleaseDate(newFilm.getReleaseDate());
-        film.setDuration(newFilm.getDuration());
-        log.info("Фильм обновлен: {}", film);
+        Film film = films.get(updatedFilm.getId());
+        film.setName(updatedFilm.getName());
+        film.setDescription(updatedFilm.getDescription());
+        film.setReleaseDate(updatedFilm.getReleaseDate());
+        film.setDuration(updatedFilm.getDuration());
         films.put(film.getId(), film);
+        log.info("Фильм обновлен: {}", film);
         return film;
     }
 
