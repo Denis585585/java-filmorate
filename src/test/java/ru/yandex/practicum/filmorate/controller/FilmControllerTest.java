@@ -23,7 +23,7 @@ public class FilmControllerTest {
     private ValidatorFactory validatorFactory;
     private Validator validator;
 
-    FilmController filmController;
+    private FilmController filmController;
 
     @BeforeEach
     public void beforeEach() {
