@@ -22,7 +22,7 @@ public class UserControllerTest {
     private ValidatorFactory validatorFactory;
     private Validator validator;
 
-    UserController userController;
+    private UserController userController;
 
     @BeforeEach
     public void beforeEach() {
