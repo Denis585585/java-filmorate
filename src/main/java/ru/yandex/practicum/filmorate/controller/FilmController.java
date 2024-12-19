@@ -58,7 +58,7 @@ public class FilmController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public Film updateFilm(@Valid @RequestBody Film updatedFilm) {
-        log.info("Film was {} was update", updatedFilm);
+        log.info("Film {} was update", updatedFilm);
         return filmService.updateFilm(updatedFilm);
     }
 
