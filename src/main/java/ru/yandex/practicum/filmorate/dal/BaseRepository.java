@@ -53,14 +53,14 @@ public class BaseRepository<T> {
         if (id != null) {
             return id;
         } else {
-            throw new RuntimeException("Не удалось сохранить данные");
+            throw new NotFoundException("Не удалось сохранить данные");
         }
     }
 
     protected void batchUpdateBase(String query, BatchPreparedStatementSetter bps) {
         int[] rowUpdate = jdbc.batchUpdate(query, bps);
         if (rowUpdate.length == 0) {
-            throw new RuntimeException("Не удалось обновить данные");
+            throw new NotFoundException("Не удалось обновить данные");
         }
     }
 }

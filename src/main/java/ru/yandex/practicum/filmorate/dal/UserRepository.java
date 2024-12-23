@@ -21,6 +21,16 @@ public class UserRepository extends BaseRepository<User> implements UserStorage 
         super(jdbc, mapper);
     }
 
+    @Override
+    public Collection<User> getUsers() {
+        return findMany(QUERY_FOR_ALL_USER);
+    }
+
+    @Override
+    public User getUserById(Integer id) {
+        return findOne(QUERY_FOR_USER_BY_ID, id);
+    }
+
 
     @Override
     public User createUser(User user) {
@@ -42,7 +52,8 @@ public class UserRepository extends BaseRepository<User> implements UserStorage 
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
-                user.getBirthday()
+                user.getBirthday(),
+                user.getId()
         );
         return user;
     }
@@ -50,15 +61,5 @@ public class UserRepository extends BaseRepository<User> implements UserStorage 
     @Override
     public void deleteUser(Integer id) {
         delete(DELETE_QUERY, id);
-    }
-
-    @Override
-    public Collection<User> getUsers() {
-        return findMany(QUERY_FOR_ALL_USER);
-    }
-
-    @Override
-    public User getUserById(Integer id) {
-        return findOne(QUERY_FOR_USER_BY_ID, id);
     }
 }

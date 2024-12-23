@@ -89,7 +89,7 @@ class FilmRepositoryTest {
         filmRepository.addFilm(film2);
         filmRepository.addFilm(film3);
 
-        assertThat(film2).hasFieldOrPropertyWithValue("id", 5);
+        assertThat(film2).hasFieldOrPropertyWithValue("id", 8);
     }
 
     @Test

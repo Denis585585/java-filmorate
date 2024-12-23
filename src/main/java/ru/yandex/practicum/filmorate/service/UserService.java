@@ -25,19 +25,26 @@ public class UserService {
     }
 
     public void addFriend(Integer userId, Integer friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
         friendshipRepository.addFriend(userId, friendId);
     }
 
     public void deleteFriend(Integer userId, Integer friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
         friendshipRepository.deleteFriend(userId, friendId);
         log.info("User with id {} deleted", friendId);
     }
 
     public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
         return friendshipRepository.getCommonFriends(userId, friendId);
     }
 
     public Collection<User> getFriends(Integer userId) {
+        userStorage.getUserById(userId);
         return friendshipRepository.getAllFriends(userId);
     }
 
@@ -50,6 +57,7 @@ public class UserService {
     }
 
     public User updateUser(User user) {
+        getUserById(user.getId());
         return userStorage.updateUser(user);
     }
 

@@ -86,7 +86,6 @@ public class FilmRepository extends BaseRepository<Film> implements FilmStorage 
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
-                film.getReleaseDate(),
                 film.getDuration(),
                 film.getMpa().getId(),
                 film.getId()
