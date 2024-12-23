@@ -20,15 +20,15 @@ public class GenreService {
         return genreRepository.getAllGenres();
     }
 
-    public Genre getGenreById(Long genreId) {
+    public Genre getGenreById(Integer genreId) {
         return genreRepository.getGenreById(genreId);
     }
 
-    public void updateGenre(Long filmId, List<Long> genresIds) {
+    public void updateGenre(Integer filmId, List<Integer> genresIds) {
         genreRepository.addGenre(filmId, genresIds);
     }
 
-    public void deleteGenre(Long filmId) {
+    public void deleteGenre(Integer filmId) {
         genreRepository.deleteGenres(filmId);
     }
 }

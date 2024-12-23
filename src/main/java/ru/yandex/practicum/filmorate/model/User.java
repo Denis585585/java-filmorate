@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private Long id;
+    private Integer id;
     @NotBlank
     @Email
     private String email;
@@ -27,7 +27,7 @@ public class User {
     @NotNull
     @PastOrPresent
     private LocalDate birthday;
-    private final Set<Long> friends = new HashSet<>();
+    private final Set<Integer> friends = new HashSet<>();
 
     public String getName() {
         if (name == null || name.isBlank()) {

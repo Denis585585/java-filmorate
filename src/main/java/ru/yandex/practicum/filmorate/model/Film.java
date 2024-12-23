@@ -23,7 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
-    private Long id;
+    private Integer id;
     @NotBlank
     private String name;
     @NotBlank

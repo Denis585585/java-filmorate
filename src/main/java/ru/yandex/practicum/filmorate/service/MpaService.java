@@ -18,7 +18,7 @@ public class MpaService {
         return mpaRepository.getAllMpa();
     }
 
-    public Mpa getMpaById (Long mpaId) {
+    public Mpa getMpaById (Integer mpaId) {
         return mpaRepository.getMpaById(mpaId);
     }
 }

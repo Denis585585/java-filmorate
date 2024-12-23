@@ -13,32 +13,32 @@ import java.util.*;
 @Repository
 public class FilmRepository extends BaseRepository<Film> implements FilmStorage {
 
-    private static final String INSERT_QUERY = "INSERT INTO films(film_name, description," +
-            " release_date, duration, mpa_id)" + "VALUES (?, ?, ?, ?, ?)";
-    private static final String QUERY_FIND_FILM_BY_ID = "SELECT * FROM films f, mpa_ratings m " +
-            "WHERE f.mpa_id = m.mpa_id AND f.film_id = ?";
-    private static final String UPDATE_QUERY = "UPDATE films SET film_name = ?, description = ?," +
-            " release_date = ?, duration = ?, mpa_id = ? WHERE film_id = ?";
-    private static final String QUERY_FOR_ALL_FILMS = "SELECT * FROM films f," +
-            "mpa_ratings m WHERE f.mpa_id = m.mpa_id";
-    private static final String DELETE_QUERY = "DELETE FROM films WHERE film_id = ?";
-    private static final String QUERY_POPULAR_FILMS = "SELECT * FROM films f LEFT JOIN mpa_ratings m " +
-            "ON f.mpa_id = m.mpa_id LEFT JOIN (SELECT film_id, COUNT(film_id) AS LIKES FROM films_likes " +
-            "GROUP BY film_id) fl ON f.film_id = fl.film_id ORDER BY LIKES DESC LIMIT ?";
-    private static final String QUERY_ALL_GENRES_FILMS = "SELECT * FROM films_genres fg, " +
-            "genres g WHERE fg.genre_id = g.genre_id";
-    private static final String QUERY_GENRES_BY_FILM = "SELECT * FROM genres g, film_genres fg " +
-            "WHERE g.genre_id = fg.genre_id AND fg.film_id = ?";
+    private static final String QUERY_FOR_ALL_FILMS = "SELECT * FROM FILMS f, " +
+            "MPA_RATINGS m WHERE f.MPA_ID = m.MPA_ID";
+    private static final String QUERY_FIND_FILM_BY_ID = "SELECT * FROM FILMS f, MPA_RATINGS m " +
+            "WHERE f.MPA_ID = m.MPA_ID AND f.FILM_ID = ?";
+    private static final String INSERT_QUERY = "INSERT INTO FILMS " +
+            "(FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE_QUERY = "UPDATE FILMS SET FILM_NAME = ?, DESCRIPTION = ?, " +
+            "RELEASE_DATE = ?, DURATION = ?, MPA_ID = ? WHERE FILM_ID = ?";
+    private static final String DELETE_QUERY = "DELETE FROM FILMS WHERE FILM_ID = ?";
+    private static final String QUERY_POPULAR_FILMS = "SELECT * FROM FILMS f LEFT JOIN MPA_RATINGS m " +
+            "ON f.MPA_ID = m.MPA_ID LEFT JOIN (SELECT FILM_ID, COUNT(FILM_ID) AS LIKES FROM FILMS_LIKES " +
+            "GROUP BY FILM_ID) fl ON f.FILM_ID = fl.FILM_ID ORDER BY LIKES DESC LIMIT ?";
+    private static final String QUERY_ALL_GENRES_FILMS = "SELECT * FROM FILMS_GENRES fg, " +
+            "GENRES g WHERE fg.GENRE_ID = g.GENRE_ID";
+    private static final String QUERY_GENRES_BY_FILM = "SELECT * FROM GENRES g, FILMS_GENRES fg " +
+            "WHERE g.GENRE_ID = fg.GENRE_ID AND fg.FILM_ID = ?";
 
 
-    public FilmRepository(JdbcTemplate jdbc, RowMapper<Film> mapper, Class<Film> entityType) {
-        super(jdbc, mapper, Film.class);
+    public FilmRepository(JdbcTemplate jdbc, RowMapper<Film> mapper) {
+        super(jdbc, mapper);
     }
 
     @Override
     public Collection<Film> getFilms() {
         Collection<Film> films = findMany(QUERY_FOR_ALL_FILMS);
-        Map<Long, Set<Genre>> genres = getAllGenres();
+        Map<Integer, Set<Genre>> genres = getAllGenres();
         for (Film film : films) {
             film.setGenres(genres.getOrDefault(film.getId(), Collections.emptySet()));
         }
@@ -48,7 +48,7 @@ public class FilmRepository extends BaseRepository<Film> implements FilmStorage 
 
     @Override
     public Film addFilm(Film film) {
-        Long id = insert(
+        Integer id = insert(
                 INSERT_QUERY,
                 film.getName(),
                 film.getDescription(),
@@ -61,16 +61,16 @@ public class FilmRepository extends BaseRepository<Film> implements FilmStorage 
     }
 
     @Override
-    public Film getFilmById(Long filmId) {
+    public Film getFilmById(Integer filmId) {
         Film film = findOne(QUERY_FIND_FILM_BY_ID, filmId);
         film.setGenres(getGenresByFilm(filmId));
         return film;
     }
 
     @Override
-    public Collection<Film> getPopularFilms(Long count) {
+    public Collection<Film> getPopularFilms(Integer count) {
         Collection<Film> films = findMany(QUERY_POPULAR_FILMS, count);
-        Map<Long, Set<Genre>> genres = getAllGenres();
+        Map<Integer, Set<Genre>> genres = getAllGenres();
         for (Film film : films) {
             if (genres.containsKey(film.getId())) {
                 film.setGenres(genres.get(film.getId()));
@@ -95,28 +95,28 @@ public class FilmRepository extends BaseRepository<Film> implements FilmStorage 
     }
 
     @Override
-    public void deleteFilm(Long filmId) {
+    public void deleteFilm(Integer filmId) {
         delete(DELETE_QUERY, filmId);
     }
 
-    private Map<Long, Set<Genre>> getAllGenres() {
-        Map<Long, Set<Genre>> genres = new HashMap<>();
+    private Map<Integer, Set<Genre>> getAllGenres() {
+        Map<Integer, Set<Genre>> genres = new HashMap<>();
         return jdbc.query(QUERY_ALL_GENRES_FILMS, (ResultSet rs) -> {
             while (rs.next()) {
-                Long filmId = rs.getLong("film_id");
-                Long genreId = rs.getLong("genre_id");
-                String genreName = rs.getString("genre_name");
+                Integer filmId = rs.getInt("FILM_ID");
+                Integer genreId = rs.getInt("GENRE_ID");
+                String genreName = rs.getString("GENRE_NAME");
                 genres.computeIfAbsent(filmId, k -> new HashSet<>()).add(new Genre(genreId, genreName));
             }
             return genres;
         });
     }
 
-    private Set<Genre> getGenresByFilm(Long filmId) {
+    private Set<Genre> getGenresByFilm(Integer filmId) {
         return jdbc.query(QUERY_GENRES_BY_FILM, (ResultSet rs) -> {
             Set<Genre> genres = new HashSet<>();
             while (rs.next()) {
-                Long genreId = rs.getLong("GENRE_ID");
+                Integer genreId = rs.getInt("GENRE_ID");
                 String genreName = rs.getString("GENRE_NAME");
                 genres.add(new Genre(genreId, genreName));
             }

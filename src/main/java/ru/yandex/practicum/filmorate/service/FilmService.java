@@ -33,23 +33,23 @@ public class FilmService {
     }
 
 
-    public void addLike(Long filmId, Long userId) {
+    public void addLike(Integer filmId, Integer userId) {
         filmStorage.getFilmById(filmId);
         likesRepository.addLike(filmId, userId);
         log.info("User {} liked film {}", userId, filmId);
     }
 
-    public void deleteLike(Long filmId, Long userId) {
+    public void deleteLike(Integer filmId, Integer userId) {
         filmStorage.getFilmById(filmId);
         likesRepository.deleteLike(filmId, userId);
         log.info("User {} delete his like film {}", userId, filmId);
     }
 
-    public Film geFilmById(Long filmId) {
+    public Film geFilmById(Integer filmId) {
         return filmStorage.getFilmById(filmId);
     }
 
-    public Collection<Film> getPopularFilms(Long count) {
+    public Collection<Film> getPopularFilms(Integer count) {
         return filmStorage.getPopularFilms(count);
     }
 
@@ -83,7 +83,7 @@ public class FilmService {
         return updatedFilm;
     }
 
-    public void deleteFilm(Long filmId) {
+    public void deleteFilm(Integer filmId) {
         filmStorage.deleteFilm(filmId);
     }
 }

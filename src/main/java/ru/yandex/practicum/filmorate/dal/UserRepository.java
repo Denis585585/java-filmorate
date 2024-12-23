@@ -11,21 +11,20 @@ import java.util.Collection;
 @Repository
 public class UserRepository extends BaseRepository<User> implements UserStorage {
 
-    private static final String QUERY_FOR_ALL_USER = "SELECT * FROM users";
-    private static final String QUERY_FOR_USER_BY_ID = "SELECT * FROM users WHERE user_id = ?";
-    private static final String INSERT_QUERY = "INSERT INTO users (email, login, username, birthday) VALUES (?, ?, ?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE users SET email = ?, login = ?, username = ?, birthday = ? " +
-            "WHERE user_id = ?";
-    private static final String DELETE_QUERY = "DELETE FROM users WHERE user_id = ?";
+    private static final String QUERY_FOR_ALL_USER = "SELECT * FROM USERS";
+    private static final String QUERY_FOR_USER_BY_ID = "SELECT * FROM USERS WHERE USER_ID = ?";
+    private static final String INSERT_QUERY = "INSERT INTO USERS (EMAIL, LOGIN, USERNAME, BIRTHDAY) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_QUERY = "UPDATE USERS SET EMAIL = ?, LOGIN = ?, USERNAME = ?, BIRTHDAY = ? WHERE USER_ID = ?";
+    private static final String DELETE_QUERY = "DELETE FROM USERS WHERE USER_ID = ?";
 
-    public UserRepository(JdbcTemplate jdbc, RowMapper<User> mapper, Class<User> entityType) {
-        super(jdbc, mapper, entityType);
+    public UserRepository(JdbcTemplate jdbc, RowMapper<User> mapper) {
+        super(jdbc, mapper);
     }
 
 
     @Override
     public User createUser(User user) {
-        Long id = insert(
+        Integer id = insert(
                 INSERT_QUERY,
                 user.getEmail(),
                 user.getLogin(),
@@ -49,7 +48,7 @@ public class UserRepository extends BaseRepository<User> implements UserStorage 
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(Integer id) {
         delete(DELETE_QUERY, id);
     }
 
@@ -59,7 +58,7 @@ public class UserRepository extends BaseRepository<User> implements UserStorage 
     }
 
     @Override
-    public User getUserById(Long id) {
+    public User getUserById(Integer id) {
         return findOne(QUERY_FOR_USER_BY_ID, id);
     }
 }

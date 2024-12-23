@@ -13,30 +13,30 @@ import java.util.List;
 
 @Repository
 public class GenreRepository extends BaseRepository<Genre> {
-    private final static String QUERY_FOR_ALL_GENRES = "SELECT * FROM genres";
-    private final static String INSERT_QUERY = "INSERT INTO films_genres (film_id, genre_id) VALUES (?, ?)";
-    private final static String QUERY_FOR_GENRE_BY_ID = "SELECT * FROM genres WHERE genre_id = ?";
-    private final static String DELETE_ALL = "DELETE FROM films_genres WHERE genre_id = ?";
+    private static final String QUERY_FOR_ALL_GENRES = "SELECT * FROM GENRES";
+    private static final String INSERT_QUERY = "INSERT INTO FILMS_GENRES (FILM_ID, GENRE_ID) VALUES (?, ?)";
+    private static final String QUERY_FOR_GENRE_BY_ID = "SELECT * FROM GENRES WHERE GENRE_ID = ?";
+    private static final String DELETE_ALL = "DELETE FROM FILMS_GENRES WHERE FILM_ID = ?";
 
-    public GenreRepository(JdbcTemplate jdbc, RowMapper<Genre> mapper, Class<Genre> entityType) {
-        super(jdbc, mapper, entityType);
+    public GenreRepository(JdbcTemplate jdbc, RowMapper<Genre> mapper) {
+        super(jdbc, mapper);
     }
 
     public Collection<Genre> getAllGenres() {
         return findMany(QUERY_FOR_ALL_GENRES);
     }
 
-    public Genre getGenreById(Long id) {
+    public Genre getGenreById(Integer id) {
         return findOne(QUERY_FOR_GENRE_BY_ID, id);
     }
 
-    public void addGenre(Long filmId, List<Long> genresIds) {
+    public void addGenre(Integer filmId, List<Integer> genresIds) {
         batchUpdateBase(INSERT_QUERY, new BatchPreparedStatementSetter() {
 
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setLong(1, filmId);
-                ps.setLong(2, genresIds.get(i));
+                ps.setInt(1, filmId);
+                ps.setInt(2, genresIds.get(i));
             }
 
             @Override
@@ -46,7 +46,7 @@ public class GenreRepository extends BaseRepository<Genre> {
         });
     }
 
-    public void deleteGenres(Long filmId) {
+    public void deleteGenres(Integer filmId) {
         delete(DELETE_ALL, filmId);
     }
 }

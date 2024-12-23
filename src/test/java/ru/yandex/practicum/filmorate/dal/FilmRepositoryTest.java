@@ -37,8 +37,8 @@ class FilmRepositoryTest {
                 .description("Test description2")
                 .releaseDate(LocalDate.of(2022, 1, 1))
                 .duration(100)
-                .mpa(new Mpa(1L, "G"))
-                .genres(Set.of(new Genre(1L, "Комедия")))
+                .mpa(new Mpa(1, "G"))
+                .genres(Set.of(new Genre(1, "Комедия")))
                 .build();
 
         film2 = Film.builder()
@@ -46,8 +46,8 @@ class FilmRepositoryTest {
                 .description("Test description2")
                 .releaseDate(LocalDate.of(2022, 1, 1))
                 .duration(100)
-                .mpa(new Mpa(2L, "PG"))
-                .genres(Set.of(new Genre(2L, "Драма")))
+                .mpa(new Mpa(2, "PG"))
+                .genres(Set.of(new Genre(2, "Драма")))
                 .build();
 
         film3 = Film.builder()
@@ -55,8 +55,8 @@ class FilmRepositoryTest {
                 .description("Test description3")
                 .releaseDate(LocalDate.of(2022, 1, 1))
                 .duration(100)
-                .mpa(new Mpa(3L, "PG-13"))
-                .genres(Set.of(new Genre(6L, "Боевик")))
+                .mpa(new Mpa(3, "PG-13"))
+                .genres(Set.of(new Genre(6, "Боевик")))
                 .build();
     }
 
@@ -80,7 +80,7 @@ class FilmRepositoryTest {
         filmRepository.addFilm(film1);
         filmRepository.addFilm(film2);
         filmRepository.addFilm(film3);
-        assertThat(filmRepository.getPopularFilms(10L)).isNotEmpty();
+        assertThat(filmRepository.getPopularFilms(10)).isNotEmpty();
     }
 
     @Test
@@ -98,13 +98,13 @@ class FilmRepositoryTest {
         filmRepository.addFilm(film2);
         filmRepository.addFilm(film3);
         Film updatedFilm = Film.builder()
-                .id(1L)
+                .id(1)
                 .name("Updated Film")
                 .description("Updated description")
                 .releaseDate(LocalDate.of(2022, 1, 1))
                 .duration(100)
-                .mpa(new Mpa(1L, "G"))
-                .genres(Set.of(new Genre(1L, "Комедия")))
+                .mpa(new Mpa(1, "G"))
+                .genres(Set.of(new Genre(1, "Комедия")))
                 .build();
 
         Film updated = filmRepository.updateFilm(updatedFilm);
@@ -117,7 +117,7 @@ class FilmRepositoryTest {
         filmRepository.addFilm(film2);
         filmRepository.addFilm(film3);
 
-        filmRepository.deleteFilm(1L);
-        assertThrows(NotFoundException.class, () -> filmRepository.getFilmById(1L));
+        filmRepository.deleteFilm(1);
+        assertThrows(NotFoundException.class, () -> filmRepository.getFilmById(1));
     }
 }

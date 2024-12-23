@@ -88,7 +88,7 @@ class UserRepositoryTest {
         userRepository.createUser(user2);
         userRepository.createUser(user3);
         User updatedUser = User.builder()
-                .id(1L)
+                .id(1)
                 .email("test@example.com")
                 .login("UpdateUser")
                 .name("Update User")
@@ -105,8 +105,8 @@ class UserRepositoryTest {
         userRepository.createUser(user2);
         userRepository.createUser(user3);
 
-        userRepository.deleteUser(1L);
-        assertThrows(NotFoundException.class, () -> userRepository.getUserById(1L));
+        userRepository.deleteUser(1);
+        assertThrows(NotFoundException.class, () -> userRepository.getUserById(1));
     }
 
     @Test

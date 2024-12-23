@@ -24,20 +24,20 @@ public class UserService {
         this.friendshipRepository = friendshipRepository;
     }
 
-    public void addFriend(Long userId, Long friendId) {
+    public void addFriend(Integer userId, Integer friendId) {
         friendshipRepository.addFriend(userId, friendId);
     }
 
-    public void deleteFriend(Long userId, Long friendId) {
+    public void deleteFriend(Integer userId, Integer friendId) {
         friendshipRepository.deleteFriend(userId, friendId);
         log.info("User with id {} deleted", friendId);
     }
 
-    public Collection<User> getCommonFriends(Long userId, Long friendId) {
+    public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
         return friendshipRepository.getCommonFriends(userId, friendId);
     }
 
-    public Collection<User> getFriends(Long userId) {
+    public Collection<User> getFriends(Integer userId) {
         return friendshipRepository.getAllFriends(userId);
     }
 
@@ -53,11 +53,11 @@ public class UserService {
         return userStorage.updateUser(user);
     }
 
-    public void deleteUser(Long userId) {
+    public void deleteUser(Integer userId) {
         userStorage.deleteUser(userId);
     }
 
-    public User getUserById(Long userId) {
+    public User getUserById(Integer userId) {
         return userStorage.getUserById(userId);
     }
 }
