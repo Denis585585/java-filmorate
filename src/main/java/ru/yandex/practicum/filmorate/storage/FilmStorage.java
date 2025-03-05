@@ -10,9 +10,11 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
-    void deleteFilm(Long filmId);
+    void deleteFilm(Integer filmId);
 
     Collection<Film> getFilms();
 
-    Film getFilmById(Long filmId);
+    Film getFilmById(Integer filmId);
+
+    Collection<Film> getPopularFilms(Integer count);
 }

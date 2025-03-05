@@ -1,64 +1,51 @@
 package ru.yandex.practicum.filmorate.service;
 
-import jakarta.validation.ValidationException;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.dal.FriendshipRepository;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
+    private final FriendshipRepository friendshipRepository;
 
-    public void addFriend(Long userId, Long friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        if (userId.equals(friendId)) {
-            log.error("Error, u don't add myself");
-            throw new ValidationException("Error, u don't add myself");
-        }
-        if (user.getFriends().contains(friendId)) {
-            log.info("User with this id {} also your friend", friendId);
-            throw new ValidationException("User with this " + friendId + "also your friend");
-        }
-
-        user.getFriends().add(friendId);
-        friend.getFriends().add(userId);
+    public UserService(@Autowired @Qualifier("userRepository") UserStorage userStorage,
+                       @Autowired FriendshipRepository friendshipRepository) {
+        this.userStorage = userStorage;
+        this.friendshipRepository = friendshipRepository;
     }
 
-    public void deleteFriend(Long userId, Long friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userId);
+    public void addFriend(Integer userId, Integer friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
+        friendshipRepository.addFriend(userId, friendId);
+    }
+
+    public void deleteFriend(Integer userId, Integer friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
+        friendshipRepository.deleteFriend(userId, friendId);
         log.info("User with id {} deleted", friendId);
     }
 
-    public Collection<User> getCommonFriends(Long userId, Long friendId) {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        Set<Long> commonFriends = new HashSet<>(user.getFriends());
-        if (commonFriends.retainAll(friend.getFriends())) {
-            return commonFriends.stream()
-                    .map(userStorage::getUserById)
-                    .toList();
-        } else {
-            throw new NotFoundException("You don't have mutual friends");
-        }
+    public Collection<User> getCommonFriends(Integer userId, Integer friendId) {
+        userStorage.getUserById(userId);
+        userStorage.getUserById(friendId);
+        return friendshipRepository.getCommonFriends(userId, friendId);
     }
 
-    public Collection<User> getFriends(Long userId) {
-        return userStorage.getUserById(userId).getFriends().stream()
-                .map(userStorage::getUserById)
-                .toList();
+    public Collection<User> getFriends(Integer userId) {
+        userStorage.getUserById(userId);
+        return friendshipRepository.getAllFriends(userId);
     }
 
     public Collection<User> getUsers() {
@@ -70,14 +57,15 @@ public class UserService {
     }
 
     public User updateUser(User user) {
+        getUserById(user.getId());
         return userStorage.updateUser(user);
     }
 
-    public void deleteUser(Long userId) {
+    public void deleteUser(Integer userId) {
         userStorage.deleteUser(userId);
     }
 
-    public User getUserById(Long userId) {
+    public User getUserById(Integer userId) {
         return userStorage.getUserById(userId);
     }
 }
